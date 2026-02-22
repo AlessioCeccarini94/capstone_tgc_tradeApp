@@ -20,7 +20,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID uuid;
-	@Column(nullable = false)
+	@Column(nullable = false)  // TODO: Inserire nel token
 	private String firstName;
 	@Column(nullable = false)
 	private String lastName;
@@ -32,7 +32,7 @@ public class User {
 	private String password;
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Role role;
+	private Role role;         // TODO: Inserire nel token
 	private double rating;
 	private String image;
 
