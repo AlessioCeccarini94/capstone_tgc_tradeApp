@@ -36,11 +36,12 @@ public class User {
 	private double rating;
 	private String image;
 
-	public User(String firstName, String lastName, String username, String email, Role role) {
+	public User(String firstName, String lastName, String username, String email, String password, Role role) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
 		this.email = email;
+		this.password = password;
 		this.role = role;
 		this.rating = 0.0;
 		this.image = "https://ui-avatars.com/api/?name=" + firstName + lastName;
