@@ -1,12 +1,9 @@
 package alessioceccarini.tgcapp.controllers;
 
 import alessioceccarini.tgcapp.entities.User;
-import alessioceccarini.tgcapp.payloads.UserDTO;
 import alessioceccarini.tgcapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -37,9 +34,9 @@ public class UserController {
 		return userService.findById(id);
 	}
 
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public User save(@RequestBody @Validated UserDTO userDTO) {
-		return userService.save(userDTO);
-	}
+//	@PostMapping
+//	@ResponseStatus(HttpStatus.CREATED)
+//	public User save(@RequestBody @Validated UserDTO userDTO) {
+//		return userService.save(userDTO);
+//	}
 }
