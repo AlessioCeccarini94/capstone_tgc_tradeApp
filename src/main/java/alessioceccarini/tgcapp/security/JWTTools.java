@@ -1,6 +1,7 @@
 package alessioceccarini.tgcapp.security;
 
 import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.exceptions.UnauthorizedException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,14 @@ public class JWTTools {
 				.subject(String.valueOf(user.getUuid()))
 				.signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
 				.compact();
+	}
+
+	public void verifyToken(String token) {
+		try {
+			Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build().parse(token);
+		} catch (Exception e) {
+			throw new UnauthorizedException("Invalid token");
+		}
 	}
 
 }
