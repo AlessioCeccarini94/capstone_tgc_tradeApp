@@ -24,6 +24,9 @@ public class SecurityConfig {
 		// Disattivare login
 		httpSecurity.formLogin(form -> form.disable());
 
+		httpSecurity.cors(cors -> {
+		});
+
 		// Disattivare sicurezza attacchi CSFR
 		httpSecurity.csrf(csrf -> csrf.disable());
 
