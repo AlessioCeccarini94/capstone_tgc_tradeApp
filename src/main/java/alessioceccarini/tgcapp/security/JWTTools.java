@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JWTTools {
@@ -19,7 +20,7 @@ public class JWTTools {
 
 		return Jwts.builder().issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30))
-				.subject(String.valueOf(user.getUuid()))
+				.subject(String.valueOf(user.getUserId()))
 				.signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
 				.compact();
 	}
@@ -30,6 +31,14 @@ public class JWTTools {
 		} catch (Exception e) {
 			throw new UnauthorizedException("Invalid token");
 		}
+	}
+
+	public UUID extractIdFromToken(String token) {
+		return UUID.fromString(Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+				.build()
+				.parseSignedClaims(token)
+				.getPayload()
+				.getSubject());
 	}
 
 }

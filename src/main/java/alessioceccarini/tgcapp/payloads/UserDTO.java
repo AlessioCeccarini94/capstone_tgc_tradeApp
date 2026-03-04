@@ -1,7 +1,8 @@
 package alessioceccarini.tgcapp.payloads;
 
-import alessioceccarini.tgcapp.enums.Role;
 import jakarta.validation.constraints.*;
+
+import java.util.UUID;
 
 public record UserDTO(
 		@NotBlank
@@ -20,6 +21,6 @@ public record UserDTO(
 				message = "la password deve contenere almeno 8 caratteri,una lettera maiuscola, una minuscola, un numero e un carattere speciale")
 		String password,
 		@NotNull
-		Role role
+		UUID cityId
 ) {
 }

@@ -3,6 +3,9 @@ package alessioceccarini.tgcapp.enums;
 public enum Condition {
 	MINT,
 	NEAR_MINT,
+	EXCELENT,
 	GOOD,
-	PLAYED
+	LIGHT_PLAYED,
+	PLAYED,
+	POOR
 }
