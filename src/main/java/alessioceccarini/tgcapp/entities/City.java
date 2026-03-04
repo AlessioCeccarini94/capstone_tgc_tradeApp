@@ -1,5 +1,6 @@
 package alessioceccarini.tgcapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class City {
 	private String cityName;
 	@ManyToOne
 	@JoinColumn(name = "province_id", nullable = false)
+	@JsonIgnore
 	private Province province;
 
 	public City() {

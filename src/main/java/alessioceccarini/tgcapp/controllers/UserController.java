@@ -27,12 +27,12 @@ public class UserController {
 
 	//----------------------------------------- P O S T  ------------------------------------------------
 
-	@PostMapping
-	@PreAuthorize("hasAnyAuthority('USER','ADMIN')")
-	@ResponseStatus(HttpStatus.CREATED)
-	public User save(@RequestBody @Validated UserDTO userDTO) {
-		return userService.save(userDTO);
-	}
+//	@PostMapping
+//	@PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+//	@ResponseStatus(HttpStatus.CREATED)
+//	public User save(@RequestBody @Validated UserDTO userDTO) {
+//		return userService.save(userDTO);
+//	}
 
 	//------------------------------------------ G E T --------------------------------------------------
 

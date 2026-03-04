@@ -49,11 +49,15 @@ public class JWTFilter extends OncePerRequestFilter {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		filterChain.doFilter(request, response);
-		
+
 	}
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		return new AntPathMatcher().match("/auth/**", request.getServletPath());
-	}
+		if ("OPTIONS".equals(request.getMethod())) {
+			return true;
+		}
+	AntPathMatcher matcher = new AntPathMatcher();
+		return matcher.match("auth/**", request.getRequestURI())||
+				matcher.match("/cities/**", request.getRequestURI());
 }
