@@ -57,7 +57,8 @@ public class JWTFilter extends OncePerRequestFilter {
 		if ("OPTIONS".equals(request.getMethod())) {
 			return true;
 		}
-	AntPathMatcher matcher = new AntPathMatcher();
-		return matcher.match("auth/**", request.getRequestURI())||
+		AntPathMatcher matcher = new AntPathMatcher();
+		return matcher.match("auth/**", request.getRequestURI()) ||
 				matcher.match("/cities/**", request.getRequestURI());
+	}
 }
