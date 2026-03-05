@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.enums;
 
-public enum TgcType {
+public enum TcgType {
 	DRAGON_BALL,
 	POKEMON,
 	ONE_PIECE,

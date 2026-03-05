@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.security;
 
-import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.entities.user_entities.User;
 import alessioceccarini.tgcapp.exceptions.UnauthorizedException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

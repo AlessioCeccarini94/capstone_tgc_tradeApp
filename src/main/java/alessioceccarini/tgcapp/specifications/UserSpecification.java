@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.specifications;
 
-import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.entities.user_entities.User;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.UUID;

@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.services;
 
-import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.entities.user_entities.User;
 import alessioceccarini.tgcapp.exceptions.UnauthorizedException;
 import alessioceccarini.tgcapp.payloads.LoginDTO;
 import alessioceccarini.tgcapp.security.JWTTools;

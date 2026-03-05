@@ -1,6 +1,7 @@
-package alessioceccarini.tgcapp.entities;
+package alessioceccarini.tgcapp.entities.user_entities;
 
 
+import alessioceccarini.tgcapp.entities.Card;
 import alessioceccarini.tgcapp.enums.Condition;
 import jakarta.persistence.*;
 import lombok.Getter;

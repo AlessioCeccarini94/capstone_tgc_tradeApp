@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.controllers;
 
-import alessioceccarini.tgcapp.entities.City;
+import alessioceccarini.tgcapp.entities.user_entities.City;
 import alessioceccarini.tgcapp.services.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

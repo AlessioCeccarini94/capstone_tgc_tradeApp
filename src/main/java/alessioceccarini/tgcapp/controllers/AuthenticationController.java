@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.controllers;
 
-import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.entities.user_entities.User;
 import alessioceccarini.tgcapp.payloads.LoginAccessDTO;
 import alessioceccarini.tgcapp.payloads.LoginDTO;
 import alessioceccarini.tgcapp.payloads.UserDTO;

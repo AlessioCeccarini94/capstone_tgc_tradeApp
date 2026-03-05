@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.controllers;
 
-import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.entities.user_entities.User;
 import alessioceccarini.tgcapp.payloads.UserDTO;
 import alessioceccarini.tgcapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

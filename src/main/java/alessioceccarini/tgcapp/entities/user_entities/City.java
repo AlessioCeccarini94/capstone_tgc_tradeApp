@@ -1,4 +1,4 @@
-package alessioceccarini.tgcapp.entities;
+package alessioceccarini.tgcapp.entities.user_entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

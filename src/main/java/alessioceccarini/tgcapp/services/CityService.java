@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.services;
 
-import alessioceccarini.tgcapp.entities.City;
+import alessioceccarini.tgcapp.entities.user_entities.City;
 import alessioceccarini.tgcapp.repositories.CityRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

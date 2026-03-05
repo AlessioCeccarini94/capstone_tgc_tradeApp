@@ -1,9 +1,10 @@
 package alessioceccarini.tgcapp.runners;
 
-import alessioceccarini.tgcapp.entities.City;
-import alessioceccarini.tgcapp.entities.Province;
+import alessioceccarini.tgcapp.entities.user_entities.City;
+import alessioceccarini.tgcapp.entities.user_entities.Province;
 import alessioceccarini.tgcapp.repositories.CityRepo;
 import alessioceccarini.tgcapp.repositories.ProvinceRepo;
+import alessioceccarini.tgcapp.services.CardImporterService;
 import alessioceccarini.tgcapp.services.UserService;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
@@ -24,6 +25,7 @@ public class PopoulationRunner implements CommandLineRunner {
 	private final UserService userService;
 	private final CityRepo cityRepo;
 	private final ProvinceRepo provinceRepo;
+	private final CardImporterService cardImporterService;
 
 	@Value("${admin.firstName}")
 	private String adminFirstName;
@@ -37,22 +39,17 @@ public class PopoulationRunner implements CommandLineRunner {
 	private String adminPassword;
 
 	@Autowired
-	public PopoulationRunner(UserService userService, PasswordEncoder passwordEncoder, CityRepo cityRepo, ProvinceRepo provinceRepo) {
+	public PopoulationRunner(UserService userService, PasswordEncoder passwordEncoder, CityRepo cityRepo, ProvinceRepo provinceRepo, CardImporterService cardImporterService) {
 		this.userService = userService;
 		this.cityRepo = cityRepo;
 		this.provinceRepo = provinceRepo;
+		this.cardImporterService = cardImporterService;
+
 
 	}
 
-
 	@Override
 	public void run(String @NonNull ... args) throws Exception {
-		//----------------------------- CREATE ADMIN -----------------------------
-
-		if (!userService.existsByEmail(adminEmail)) {
-			userService.createAdmin(adminFirstName, adminLastName, adminUsername, adminEmail, adminPassword);
-			System.out.println(adminEmail + " has been created");
-		}
 
 		//-------------------- CREATE PROVINCES AND CITIES ------------------------
 
@@ -105,5 +102,17 @@ public class PopoulationRunner implements CommandLineRunner {
 				System.out.println(e.getMessage());
 			}
 		}
+
+		//----------------------------- CREATE ADMIN -----------------------------
+
+		if (!userService.existsByEmail(adminEmail)) {
+			userService.createAdmin(adminFirstName, adminLastName, adminUsername, adminEmail, adminPassword);
+			System.out.println(adminEmail + " has been created");
+		}
+
+		//-------------------------------------------- CARD IMPORT---------------------------------
+
+		cardImporterService.importCards();
+
 	}
 }

@@ -1,7 +1,7 @@
 package alessioceccarini.tgcapp.services;
 
-import alessioceccarini.tgcapp.entities.City;
-import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.entities.user_entities.City;
+import alessioceccarini.tgcapp.entities.user_entities.User;
 import alessioceccarini.tgcapp.enums.Role;
 import alessioceccarini.tgcapp.exceptions.NotFoundException;
 import alessioceccarini.tgcapp.payloads.UserDTO;
@@ -63,6 +63,8 @@ public class UserService {
 	public void createAdmin(String adminFirstName, String adminLastName, String username, String email, String rawPassword) {
 
 		if (userRepo.existsByEmail(email)) return;
+		City city = cityRepo.findAll().stream().findFirst()
+				.orElseThrow(() -> new NotFoundException("City not found"));
 
 		User admin = new User();
 		admin.setFirstName(adminFirstName);
@@ -71,6 +73,7 @@ public class UserService {
 		admin.setEmail(email);
 		admin.setPassword(passwordEncoder.encode(rawPassword));
 		admin.setRole(Role.ADMIN);
+		admin.setCity(city);
 
 		userRepo.save(admin);
 	}

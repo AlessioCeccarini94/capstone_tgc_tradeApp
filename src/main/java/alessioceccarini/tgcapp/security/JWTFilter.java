@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.security;
 
-import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.entities.user_entities.User;
 import alessioceccarini.tgcapp.exceptions.UnauthorizedException;
 import alessioceccarini.tgcapp.services.UserService;
 import jakarta.servlet.FilterChain;
@@ -58,7 +58,7 @@ public class JWTFilter extends OncePerRequestFilter {
 			return true;
 		}
 		AntPathMatcher matcher = new AntPathMatcher();
-		return matcher.match("auth/**", request.getRequestURI()) ||
+		return matcher.match("/auth/**", request.getRequestURI()) ||
 				matcher.match("/cities/**", request.getRequestURI());
 	}
 }
