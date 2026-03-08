@@ -2,6 +2,7 @@ package alessioceccarini.tgcapp.runners;
 
 import alessioceccarini.tgcapp.entities.user_entities.City;
 import alessioceccarini.tgcapp.entities.user_entities.Province;
+import alessioceccarini.tgcapp.repositories.CardRepo;
 import alessioceccarini.tgcapp.repositories.CityRepo;
 import alessioceccarini.tgcapp.repositories.ProvinceRepo;
 import alessioceccarini.tgcapp.services.CardImporterService;
@@ -26,6 +27,7 @@ public class PopoulationRunner implements CommandLineRunner {
 	private final CityRepo cityRepo;
 	private final ProvinceRepo provinceRepo;
 	private final CardImporterService cardImporterService;
+	private final CardRepo cardRepo;
 
 	@Value("${admin.firstName}")
 	private String adminFirstName;
@@ -39,13 +41,12 @@ public class PopoulationRunner implements CommandLineRunner {
 	private String adminPassword;
 
 	@Autowired
-	public PopoulationRunner(UserService userService, PasswordEncoder passwordEncoder, CityRepo cityRepo, ProvinceRepo provinceRepo, CardImporterService cardImporterService) {
+	public PopoulationRunner(UserService userService, PasswordEncoder passwordEncoder, CityRepo cityRepo, ProvinceRepo provinceRepo, CardImporterService cardImporterService, CardRepo cardRepo) {
 		this.userService = userService;
 		this.cityRepo = cityRepo;
 		this.provinceRepo = provinceRepo;
 		this.cardImporterService = cardImporterService;
-
-
+		this.cardRepo = cardRepo;
 	}
 
 	@Override
@@ -111,8 +112,10 @@ public class PopoulationRunner implements CommandLineRunner {
 		}
 
 		//-------------------------------------------- CARD IMPORT---------------------------------
+		if (cardRepo.count() == 0) {
+			cardImporterService.importCards();
+		}
 
-		cardImporterService.importCards();
 
 	}
 }

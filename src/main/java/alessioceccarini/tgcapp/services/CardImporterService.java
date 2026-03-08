@@ -16,153 +16,245 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 @Service
 public class CardImporterService {
 
+	private static final Map<Long, String> TARGET_GAMES = Map.of(
+			1L, "Magic The Gathering",
+			5L, "Pokémon",
+			4L, "Yu-Gi-Oh!",
+			9L, "Dragon Ball Super",
+			15L, "One Piece",
+			18L, "Lorcana"
+
+
+	);
 	private final RestTemplate restTemplate;
 	private final CardRepo cardRepo;
 	private final ExpansionRepo expansionRepo;
 	private final GameRepo gameRepo;
-	// cache per evitare migliaia di query
 	private final Map<Long, Game> gameCache = new HashMap<>();
-	private final Map<Long, Expansion> expansionCache = new HashMap<>();
+	private final Map<String, Expansion> expansionCache = new HashMap<>();
+	private final Map<Long, String> expansionNames = new HashMap<>();
 	@Value("${cardtrader.apikey}")
 	private String apikey;
 
-
 	@Autowired
-	public CardImporterService(RestTemplate restTemplate,
-							   CardRepo cardRepo,
-							   ExpansionRepo expansionRepo,
-							   GameRepo gameRepo) {
+	public CardImporterService(
+			RestTemplate restTemplate,
+			CardRepo cardRepo,
+			ExpansionRepo expansionRepo,
+			GameRepo gameRepo
+	) {
 		this.restTemplate = restTemplate;
 		this.cardRepo = cardRepo;
 		this.expansionRepo = expansionRepo;
 		this.gameRepo = gameRepo;
 	}
 
+	// ----------------------------------------------------
 
 	public void importCards() {
 
-		List<Card> cardsBatch = new ArrayList<>();
+		Set<Long> existingIds = new HashSet<>(cardRepo.findAllBlueprintIds());
 
-		int page = 1;
+		List<Card> batch = new ArrayList<>();
 
-		while (true) {
+		for (Long gameId : TARGET_GAMES.keySet()) {
 
-			String url = "https://api.cardtrader.com/api/v2/blueprints?page=" + page;
+			String gameName = TARGET_GAMES.get(gameId);
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("Authorization", "Bearer " + apikey);
+			System.out.println("IMPORTING GAME: " + gameName);
 
-			HttpEntity<String> entity = new HttpEntity<>(headers);
+			Game game = getOrCreateGame(gameId, gameName);
 
-			ResponseEntity<List<Map<String, Object>>> response =
-					restTemplate.exchange(
-							url,
-							HttpMethod.GET,
-							entity,
-							new ParameterizedTypeReference<>() {
-							}
-					);
+			List<Long> expansions = getExpansionsForGame(gameId);
+			System.out.println("EXPANSIONS: " + expansions.size());
 
-			List<Map<String, Object>> blueprints = response.getBody();
+			for (Long expansionId : expansions) {
 
-			if (blueprints == null || blueprints.isEmpty()) {
-				break;
-			}
+				String expansionName = expansionNames.get(expansionId);
 
-			System.out.println("PAGE " + page + " - results " + blueprints.size());
+				Expansion expansion = getOrCreateExpansion(expansionId, expansionName, game);
 
-			for (Map<String, Object> blueprint : blueprints) {
+				int page = 1;
 
+				while (true) {
 
-				Long blueprintId = Long.valueOf(blueprint.get("id").toString());
-				if (cardRepo.existsByBlueprintId(blueprintId)) continue;
-				Long gameId = Long.valueOf(blueprint.get("game_id").toString());
-				if (gameId != 15) continue;
-				Long expansionId = Long.valueOf(blueprint.get("expansion_id").toString());
+					String url =
+							"https://api.cardtrader.com/api/v2/blueprints?expansion_id="
+									+ expansionId +
+									"&page=" + page +
+									"&page_size=100";
 
-				String name = blueprint.get("name").toString();
-				String image = blueprint.get("image") != null
-						? blueprint.get("image").toString()
-						: null;
+					HttpHeaders headers = new HttpHeaders();
+					headers.set("Authorization", "Bearer " + apikey);
 
-				List<Card> cards = new ArrayList<>();
+					HttpEntity<String> entity = new HttpEntity<>(headers);
 
-				Game game = getOrCreateGame(gameId);
-				Expansion expansion = getOrCreateExpansion(expansionId, game);
+					ResponseEntity<List<Map<String, Object>>> response =
+							restTemplate.exchange(
+									url,
+									HttpMethod.GET,
+									entity,
+									new ParameterizedTypeReference<>() {
+									}
+							);
 
+					List<Map<String, Object>> blueprints = response.getBody();
 
-				Card card = new Card();
-				card.setBlueprintId(blueprintId);
-				card.setCardName(name);
-				card.setImage(image);
-				card.setExpansion(expansion);
+					if (blueprints == null || blueprints.isEmpty()) break;
 
-				cardsBatch.add(card);
-				if (cardsBatch.size() <= 100) {
-					cardRepo.saveAll(cardsBatch);
-					cardsBatch.clear();
+					for (Map<String, Object> blueprint : blueprints) {
+
+						Long blueprintId = Long.valueOf(blueprint.get("id").toString());
+
+						if (existingIds.contains(blueprintId)) continue;
+
+						String cardName = blueprint.get("name").toString();
+
+						Map<String, Object> imageMap =
+								(Map<String, Object>) blueprint.get("image");
+
+						String image = null;
+
+						if (imageMap != null && imageMap.get("url") != null) {
+							image = "https://api.cardtrader.com" + imageMap.get("url");
+						}
+
+						Card card = new Card();
+						card.setBlueprintId(blueprintId);
+						card.setCardName(cardName);
+						card.setImage(image);
+						card.setExpansion(expansion);
+
+						batch.add(card);
+						existingIds.add(blueprintId);
+
+						if (batch.size() >= 1000) {
+							cardRepo.saveAll(batch);
+							batch.clear();
+							System.out.println("Saved batch → 1000");
+						}
+					}
+
+					page++;
 				}
 			}
-			if (!cardsBatch.isEmpty()) {
-				cardRepo.saveAll(cardsBatch);
-				cardsBatch.clear();
-			}
-
-			page++;
 		}
+
+		if (!batch.isEmpty()) {
+			cardRepo.saveAll(batch);
+		}
+
+		System.out.println("IMPORT COMPLETED");
 	}
 
-	//----------------------------------------- M E T H O D S ---------------------------------------------
+	// ----------------------------------------------------
+	// GAME
+	// ----------------------------------------------------
 
-	private Game getOrCreateGame(Long gameId) {
+	private Game getOrCreateGame(Long gameId, String name) {
 
 		Game game = gameCache.get(gameId);
 
 		if (game != null) return game;
 
-		game = gameRepo.findById(gameId)
-				.orElseGet(() -> {
+		game = gameRepo.findById(gameId).orElse(null);
 
-					Game newGame = new Game();
-					newGame.setId(gameId);
+		if (game == null) {
 
-					return gameRepo.save(newGame);
-				});
+			game = new Game();
+			game.setId(gameId);
+			game.setName(name);
+
+			game = gameRepo.save(game);
+		}
 
 		gameCache.put(gameId, game);
 
 		return game;
 	}
 
+	// ----------------------------------------------------
+	// EXPANSION
+	// ----------------------------------------------------
 
-	private Expansion getOrCreateExpansion(Long expansionId, Game game) {
+	private Expansion getOrCreateExpansion(
+			Long expansionId,
+			String expansionName,
+			Game game
+	) {
 
-		Expansion expansion = expansionCache.get(expansionId);
+		String key = game.getId() + "_" + expansionId;
+
+		Expansion expansion = expansionCache.get(key);
 
 		if (expansion != null) return expansion;
 
-		expansion = expansionRepo.findByCardTraderId(expansionId)
+		expansion = expansionRepo
+				.findByCardTraderId(expansionId)
 				.orElse(null);
+
 		if (expansion == null) {
+
 			Expansion newExpansion = new Expansion();
 			newExpansion.setCardTraderId(expansionId);
+			newExpansion.setName(expansionName);
 			newExpansion.setGame(game);
-			expansion = expansionRepo.saveAndFlush(newExpansion);
+
+			expansion = expansionRepo.save(newExpansion);
 		}
-		expansionCache.put(expansionId, expansion);
+
+		expansionCache.put(key, expansion);
 
 		return expansion;
 	}
 
-	//-----------------------------------------------------------------------------------------------------
 
+	public List<Long> getExpansionsForGame(Long gameId) {
+
+		String url = "https://api.cardtrader.com/api/v2/expansions";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + apikey);
+
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+
+		ResponseEntity<List<Map<String, Object>>> response =
+				restTemplate.exchange(
+						url,
+						HttpMethod.GET,
+						entity,
+						new ParameterizedTypeReference<>() {
+						}
+				);
+
+		List<Map<String, Object>> expansions = response.getBody();
+
+		List<Long> expansionIds = new ArrayList<>();
+
+		for (Map<String, Object> exp : expansions) {
+
+			Object gameIdObj = exp.get("game_id");
+
+			if (gameIdObj == null) continue;
+
+			Long idGame = Long.valueOf(gameIdObj.toString());
+
+			if (!idGame.equals(gameId)) continue;
+
+			Long id = Long.valueOf(exp.get("id").toString());
+			String name = exp.get("name").toString();
+
+			expansionNames.put(id, name);
+			expansionIds.add(id);
+		}
+
+		System.out.println("EXPANSIONS FOUND: " + expansionIds.size());
+
+		return expansionIds;
+	}
 }
