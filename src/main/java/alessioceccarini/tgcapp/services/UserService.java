@@ -81,7 +81,7 @@ public class UserService {
 	//------------------------------------------ G E T --------------------------------------------------
 
 	public User findById(UUID id) {
-		return userRepo.findById(id).orElseThrow(() -> new NotFoundException("not found"));
+		return userRepo.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
 	}
 
 	public User findByUsername(String username) {

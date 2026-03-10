@@ -22,9 +22,9 @@ public class UserCardsList {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID uuid;
 	@ManyToOne
-	private User userId;
+	private User user;
 	@ManyToOne
-	private Card cardId;
+	private Card card;
 	@Enumerated(EnumType.STRING)
 	private Condition condition;
 	private int quantity;
