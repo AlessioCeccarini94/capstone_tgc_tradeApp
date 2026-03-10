@@ -63,6 +63,11 @@ public class CardController {
 		return cardService.findAllUserCardsList(user.getUserId());
 	}
 
+	@GetMapping("/search")
+	public List<Card> findByBlueprintId(@RequestParam String name) {
+		return cardService.searchCards(name);
+	}
+
 	//----------------------------------- P U T ----------------------------------------
 
 	//-------------------------------- D E L E T E -------------------------------------
