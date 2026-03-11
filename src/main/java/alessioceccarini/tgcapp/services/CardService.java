@@ -52,6 +52,13 @@ public class CardService {
 		return cardRepo.findByBlueprintId(id);
 	}
 
+	public Page<Card> findByExpansionId(Long expansionId, int page, int size) {
+		if (size <= 0 || size > 500) size = 200;
+		if (page < 0) page = 0;
+		Pageable pageable = PageRequest.of(page, size);
+		return cardRepo.findByExpansionCardTraderId(expansionId, pageable);
+	}
+
 
 	//------------------------------------- USER CARD LIST ----------------------------------------------
 

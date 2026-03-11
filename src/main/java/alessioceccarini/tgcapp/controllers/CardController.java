@@ -8,6 +8,7 @@ import alessioceccarini.tgcapp.exceptions.NotFoundException;
 import alessioceccarini.tgcapp.services.CardService;
 import alessioceccarini.tgcapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -68,6 +69,13 @@ public class CardController {
 		return cardService.searchCards(name);
 	}
 
+	@GetMapping("/expansions/{expansionId}")
+	public Page<Card> findByExpansionId(
+			@PathVariable Long expansionId,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "200") int size) {
+		return cardService.findByExpansionId(expansionId, page, size);
+	}
 	//----------------------------------- P U T ----------------------------------------
 
 	//-------------------------------- D E L E T E -------------------------------------

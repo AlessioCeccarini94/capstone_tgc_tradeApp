@@ -22,4 +22,7 @@ public interface CardRepo extends JpaRepository<Card, UUID>, JpaSpecificationExe
 	Page<Card> findByExpansion_Game_Id(Long id, Pageable pageable);
 
 	Card findByBlueprintId(Long id);
+
+	Page<Card> findByExpansionCardTraderId(Long id, Pageable pageable);
+
 }

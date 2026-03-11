@@ -29,6 +29,8 @@ public class Card {
 	@ManyToOne
 	@JoinColumn(name = "expansion_id")
 	private Expansion expansion;
+	@Column(name = "avg_price")
+	private Double avgPrice;
 
 
 	public Card(String cardName, Expansion expansion) {
