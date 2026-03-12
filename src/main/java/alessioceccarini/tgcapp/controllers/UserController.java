@@ -1,8 +1,8 @@
 package alessioceccarini.tgcapp.controllers;
 
 import alessioceccarini.tgcapp.entities.user_entities.User;
-import alessioceccarini.tgcapp.payloads.UserDTO;
 import alessioceccarini.tgcapp.payloads.UserResponseDTO;
+import alessioceccarini.tgcapp.payloads.UserUpdateDTO;
 import alessioceccarini.tgcapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,14 +41,25 @@ public class UserController {
 	}
 
 	@GetMapping("/{userId}")
-	@PreAuthorize("hasAuthority('ADMIN')")
-	public User findById(@PathVariable UUID id) {
-		return userService.findById(id);
+	@PreAuthorize("hasRole('ADMIN')")
+	public UserResponseDTO getUser(@PathVariable UUID userId) {
+		User user = userService.findById(userId);
+		return new UserResponseDTO(
+				user.getUserId(),
+				user.getFirstName(),
+				user.getLastName(),
+				user.getUsername(),
+				user.getEmail(),
+				user.getCity().getCityName(),
+				user.getRating(),
+				user.getImage()
+		);
 	}
 
 	@GetMapping("/me")
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	public UserResponseDTO getCurrentUser(@AuthenticationPrincipal User user) {
+	public UserResponseDTO getCurrentUser(@AuthenticationPrincipal User principal) {
+		User user = userService.findById(principal.getUserId());
 
 		return new UserResponseDTO(
 				user.getUserId(),
@@ -56,6 +67,7 @@ public class UserController {
 				user.getLastName(),
 				user.getUsername(),
 				user.getEmail(),
+				user.getCity().getCityName(),
 				user.getRating(),
 				user.getImage()
 		);
@@ -64,14 +76,26 @@ public class UserController {
 
 	//------------------------------------------ P U T --------------------------------------------------
 	@PutMapping("/{userId}")
-	public User update(@PathVariable("userId") UUID id,
-					   @RequestBody @Validated UserDTO userDTO) {
-		return userService.updateUser(id, userDTO);
+	public UserResponseDTO update(@PathVariable UUID userId,
+								  @RequestBody @Validated UserUpdateDTO userUpdateDTO) {
+		User user = userService.updateUser(userId, userUpdateDTO);
+
+		return new UserResponseDTO(
+				user.getUserId(),
+				user.getFirstName(),
+				user.getLastName(),
+				user.getUsername(),
+				user.getEmail(),
+				user.getCity().getCityName(),
+				user.getRating(),
+				user.getImage()
+		);
+
 	}
 
 	//--------------------------------------- P A T C H -------------------------------------------------
 	@PatchMapping("/{userId}/image")
-	@PreAuthorize("hasAnyAuthority('UTENTE','ADMIN')")
+	@PreAuthorize("hasAnyRole('UTENTE','ADMIN')")
 	public User updateImage(@PathVariable UUID userId, @RequestParam("image") MultipartFile image) {
 		try {
 			return userService.updateProfileImg(userId, image);

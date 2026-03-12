@@ -5,6 +5,7 @@ import alessioceccarini.tgcapp.entities.user_entities.User;
 import alessioceccarini.tgcapp.enums.Role;
 import alessioceccarini.tgcapp.exceptions.NotFoundException;
 import alessioceccarini.tgcapp.payloads.UserDTO;
+import alessioceccarini.tgcapp.payloads.UserUpdateDTO;
 import alessioceccarini.tgcapp.repositories.CityRepo;
 import alessioceccarini.tgcapp.repositories.UserRepo;
 import alessioceccarini.tgcapp.specifications.UserSpecification;
@@ -123,14 +124,17 @@ public class UserService {
 
 	//------------------------------------------ P U T --------------------------------------------------
 
-	public User updateUser(UUID id, UserDTO userDTO) {
+	public User updateUser(UUID id, UserUpdateDTO userUpdateDTO) {
 		User user = this.findById(id);
-		user.setFirstName(userDTO.firstName());
-		user.setLastName(userDTO.lastName());
-		user.setUsername(userDTO.username());
-		user.setEmail(userDTO.email());
-		user.setPassword(passwordEncoder.encode(userDTO.password()));
-		return this.userRepo.save(user);
+		if (userUpdateDTO.cityId() != null) {
+			City city = cityRepo.findById(userUpdateDTO.cityId()).orElseThrow(() -> new NotFoundException("City not found"));
+			user.setCity(city);
+		}
+		user.setFirstName(userUpdateDTO.firstName());
+		user.setLastName(userUpdateDTO.lastName());
+		user.setUsername(userUpdateDTO.username());
+		user.setEmail(userUpdateDTO.email());
+		return userRepo.save(user);
 	}
 
 	//---------------------------------------- P A T C H ------------------------------------------------

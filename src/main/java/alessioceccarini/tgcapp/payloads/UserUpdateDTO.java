@@ -2,14 +2,11 @@ package alessioceccarini.tgcapp.payloads;
 
 import java.util.UUID;
 
-public record UserResponseDTO(
-		UUID userId,
+public record UserUpdateDTO(
 		String firstName,
 		String lastName,
 		String username,
 		String email,
-		String city,
-		Double rating,
-		String image
+		UUID cityId
 ) {
 }

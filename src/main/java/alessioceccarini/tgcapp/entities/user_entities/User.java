@@ -25,7 +25,7 @@ public class User implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID userId;
-	@Column(nullable = false)  // TODO: Inserire nel token
+	@Column(nullable = false)
 	private String firstName;
 	@Column(nullable = false)
 	private String lastName;
@@ -37,12 +37,12 @@ public class User implements UserDetails {
 	private String password;
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Role role;         // TODO: Inserire nel token
+	private Role role;
 	@Column(nullable = false)
 	private double rating = 0;
 	private String image;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "city_id", nullable = false)
+	@JoinColumn(name = "city_id")
 	private City city;
 
 

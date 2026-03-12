@@ -47,6 +47,8 @@ public class SecurityConfig {
 				.requestMatchers("/cards").permitAll()
 				.requestMatchers("/cards/search").permitAll()
 				.requestMatchers("/cards/expansions/**").permitAll()
+				.requestMatchers("/users/**").permitAll()
+				.requestMatchers("/cities").permitAll()
 				.anyRequest().authenticated());
 
 		httpSecurity.cors(cors -> {
