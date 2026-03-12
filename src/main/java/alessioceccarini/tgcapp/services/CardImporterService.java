@@ -125,12 +125,10 @@ public class CardImporterService {
 						}
 
 						Card card = new Card();
-						Double avgPrice = getAvgPrice(blueprintId);
 						card.setBlueprintId(blueprintId);
 						card.setCardName(cardName);
 						card.setImage(image);
 						card.setExpansion(expansion);
-						card.setAvgPrice(avgPrice);
 
 						batch.add(card);
 						existingIds.add(blueprintId);
@@ -254,34 +252,5 @@ public class CardImporterService {
 		System.out.println("EXPANSIONS FOUND: " + expansionIds.size());
 
 		return expansionIds;
-	}
-
-	// ---------------------------------------------------- AVG PRICE  ----------------------------------------------------
-
-	private Double getAvgPrice(Long blueprintsId) {
-		String URL = "https://api.cardtrader.com/api/v2/marketplace/blueprints/" + blueprintsId + "/price-guide";
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + apikey);
-		HttpEntity<String> entity = new HttpEntity<>(headers);
-
-		try {
-			ResponseEntity<Map<String, Object>> response =
-					restTemplate.exchange(
-							URL,
-							HttpMethod.GET,
-							entity,
-							new ParameterizedTypeReference<>() {
-							}
-					);
-			Map<String, Object> body = response.getBody();
-			if (body == null) return null;
-
-			Map<String, Object> priceGuide = (Map<String, Object>) body.get("price_guide");
-			if (priceGuide == null) return null;
-
-			return Double.valueOf(priceGuide.get("price").toString());
-		} catch (Exception e) {
-			return null;
-		}
 	}
 }

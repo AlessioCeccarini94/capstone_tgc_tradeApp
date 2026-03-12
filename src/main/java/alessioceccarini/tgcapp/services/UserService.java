@@ -74,6 +74,7 @@ public class UserService {
 		admin.setPassword(passwordEncoder.encode(rawPassword));
 		admin.setRole(Role.ADMIN);
 		admin.setCity(city);
+		admin.setImage("https://ui-avatars.com/api/?name=" + adminFirstName + adminLastName);
 
 		userRepo.save(admin);
 	}
