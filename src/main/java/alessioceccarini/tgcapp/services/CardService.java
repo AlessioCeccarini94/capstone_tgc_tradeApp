@@ -59,6 +59,9 @@ public class CardService {
 		return cardRepo.findByExpansionCardTraderId(expansionId, pageable);
 	}
 
+	public Page<Card> orderByPrice() {
+		return cardRepo.findAllByAvgPrice(PageRequest.of(0, 1000));
+	}
 
 	//------------------------------------- USER CARD LIST ----------------------------------------------
 

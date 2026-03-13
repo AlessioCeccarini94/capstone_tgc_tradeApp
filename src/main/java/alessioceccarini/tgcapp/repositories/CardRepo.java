@@ -25,4 +25,6 @@ public interface CardRepo extends JpaRepository<Card, UUID>, JpaSpecificationExe
 
 	Page<Card> findByExpansionCardTraderId(Long id, Pageable pageable);
 
+	@Query("SELECT c FROM Card c WHERE c.avgPrice IS NOT NULL ORDER BY c.avgPrice DESC")
+	Page<Card> findAllByAvgPrice(Pageable pageable);
 }

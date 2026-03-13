@@ -44,6 +44,7 @@ public class SecurityConfig {
 		httpSecurity.authorizeHttpRequests(authorizeRequests -> authorizeRequests
 				.requestMatchers("/auth/**").permitAll()
 				.requestMatchers("/games/**").permitAll()
+				.requestMatchers("/cards/top").permitAll()
 				.requestMatchers("/cards").permitAll()
 				.requestMatchers("/cards/search").permitAll()
 				.requestMatchers("/cards/expansions/**").permitAll()

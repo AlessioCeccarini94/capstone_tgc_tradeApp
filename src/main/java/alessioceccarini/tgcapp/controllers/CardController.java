@@ -76,6 +76,12 @@ public class CardController {
 			@RequestParam(defaultValue = "200") int size) {
 		return cardService.findByExpansionId(expansionId, page, size);
 	}
+
+	@GetMapping("/top")
+	public Page<Card> findTopCards(@RequestParam(defaultValue = "50") int size) {
+		return cardService.orderByPrice();
+	}
+	
 	//----------------------------------- P U T ----------------------------------------
 
 	//-------------------------------- D E L E T E -------------------------------------
