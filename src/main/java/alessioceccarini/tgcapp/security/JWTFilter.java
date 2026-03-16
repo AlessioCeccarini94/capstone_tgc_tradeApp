@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.security;
 
-import alessioceccarini.tgcapp.entities.user_entities.User;
+import alessioceccarini.tgcapp.entities.User;
 import alessioceccarini.tgcapp.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

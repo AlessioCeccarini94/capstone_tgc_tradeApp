@@ -1,6 +1,6 @@
 package alessioceccarini.tgcapp.controllers;
 
-import alessioceccarini.tgcapp.entities.user_entities.User;
+import alessioceccarini.tgcapp.entities.User;
 import alessioceccarini.tgcapp.payloads.UserResponseDTO;
 import alessioceccarini.tgcapp.payloads.UserUpdateDTO;
 import alessioceccarini.tgcapp.services.UserService;

@@ -1,7 +1,7 @@
 package alessioceccarini.tgcapp.repositories;
 
-import alessioceccarini.tgcapp.entities.user_entities.City;
-import alessioceccarini.tgcapp.entities.user_entities.Province;
+import alessioceccarini.tgcapp.entities.City;
+import alessioceccarini.tgcapp.entities.Province;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package alessioceccarini.tgcapp.runners;
 
-import alessioceccarini.tgcapp.entities.user_entities.City;
-import alessioceccarini.tgcapp.entities.user_entities.Province;
+import alessioceccarini.tgcapp.entities.City;
+import alessioceccarini.tgcapp.entities.Province;
 import alessioceccarini.tgcapp.repositories.CardRepo;
 import alessioceccarini.tgcapp.repositories.CityRepo;
 import alessioceccarini.tgcapp.repositories.ProvinceRepo;

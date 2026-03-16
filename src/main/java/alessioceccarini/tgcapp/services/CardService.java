@@ -1,10 +1,11 @@
 package alessioceccarini.tgcapp.services;
 
 import alessioceccarini.tgcapp.entities.Card;
-import alessioceccarini.tgcapp.entities.user_entities.User;
-import alessioceccarini.tgcapp.entities.user_entities.UserCardsList;
+import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.entities.UserCardsList;
 import alessioceccarini.tgcapp.enums.Condition;
 import alessioceccarini.tgcapp.exceptions.NotFoundException;
+import alessioceccarini.tgcapp.payloads.CardOwnerDTO;
 import alessioceccarini.tgcapp.repositories.CardRepo;
 import alessioceccarini.tgcapp.repositories.UserCardListRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,21 @@ public class CardService {
 		return cardRepo.findAllByAvgPrice(PageRequest.of(0, 1000));
 	}
 
-	//------------------------------------- USER CARD LIST ----------------------------------------------
+	public List<CardOwnerDTO> findOwnerByCardId(Long blueprintId) {
+		List<UserCardsList> owners = userCardListRepo.findByCard_BlueprintId(blueprintId);
+
+		return owners.stream()
+				.map(card -> new CardOwnerDTO(
+						card.getUser().getUserId(),
+						card.getUser().getUsername(),
+						card.getUser().getRating()
+				)).toList();
+	}
+
+	public List<UserCardsList> findUserCollection(UUID userId) {
+		return userCardListRepo.findByUser_UserId(userId);
+	}
+
 
 	//---------------------------------------- P O S T ---------------------------------------------------
 
@@ -91,7 +106,7 @@ public class CardService {
 
 	//------------------------------------------ G E T -----------------------------------------------------
 	public List<UserCardsList> findAllUserCardsList(UUID userId) {
-		return userCardListRepo.findAll();
+		return userCardListRepo.findByUser_UserId(userId);
 	}
 	//---------------------------------------- D E L E T E --------------------------------------------------
 

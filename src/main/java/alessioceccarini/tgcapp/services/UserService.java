@@ -1,7 +1,7 @@
 package alessioceccarini.tgcapp.services;
 
-import alessioceccarini.tgcapp.entities.user_entities.City;
-import alessioceccarini.tgcapp.entities.user_entities.User;
+import alessioceccarini.tgcapp.entities.City;
+import alessioceccarini.tgcapp.entities.User;
 import alessioceccarini.tgcapp.enums.Role;
 import alessioceccarini.tgcapp.exceptions.NotFoundException;
 import alessioceccarini.tgcapp.payloads.UserDTO;

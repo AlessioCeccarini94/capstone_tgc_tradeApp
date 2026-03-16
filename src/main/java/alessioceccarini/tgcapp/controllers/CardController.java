@@ -2,9 +2,10 @@ package alessioceccarini.tgcapp.controllers;
 
 
 import alessioceccarini.tgcapp.entities.Card;
-import alessioceccarini.tgcapp.entities.user_entities.User;
-import alessioceccarini.tgcapp.entities.user_entities.UserCardsList;
+import alessioceccarini.tgcapp.entities.User;
+import alessioceccarini.tgcapp.entities.UserCardsList;
 import alessioceccarini.tgcapp.exceptions.NotFoundException;
+import alessioceccarini.tgcapp.payloads.CardOwnerDTO;
 import alessioceccarini.tgcapp.services.CardService;
 import alessioceccarini.tgcapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/cards")
@@ -81,7 +83,16 @@ public class CardController {
 	public Page<Card> findTopCards(@RequestParam(defaultValue = "50") int size) {
 		return cardService.orderByPrice();
 	}
-	
+
+	@GetMapping("/{blueprintId}/owners")
+	public List<CardOwnerDTO> getCardOwners(@PathVariable Long blueprintId) {
+		return cardService.findOwnerByCardId(blueprintId);
+	}
+
+	@GetMapping("/collection/user/{userId}")
+	public List<UserCardsList> getUserCollection(@PathVariable UUID userId) {
+		return cardService.findUserCollection(userId);
+	}
 	//----------------------------------- P U T ----------------------------------------
 
 	//-------------------------------- D E L E T E -------------------------------------
