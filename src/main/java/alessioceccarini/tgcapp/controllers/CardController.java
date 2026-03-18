@@ -4,6 +4,7 @@ package alessioceccarini.tgcapp.controllers;
 import alessioceccarini.tgcapp.entities.Card;
 import alessioceccarini.tgcapp.entities.User;
 import alessioceccarini.tgcapp.entities.UserCardsList;
+import alessioceccarini.tgcapp.entities.UserFavCards;
 import alessioceccarini.tgcapp.exceptions.NotFoundException;
 import alessioceccarini.tgcapp.payloads.CardOwnerDTO;
 import alessioceccarini.tgcapp.services.CardService;
@@ -47,6 +48,19 @@ public class CardController {
 		return cardService.addCard(user.getUserId(), cardId);
 	}
 
+	@PostMapping("/favorites/{cardId}")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
+	public UserFavCards createUserFavCardList(
+			@PathVariable Long cardId,
+			Authentication authentication) {
+		if (authentication == null) {
+			throw new NotFoundException("Authentication is required");
+		}
+		User user = (User) authentication.getPrincipal();
+		return cardService.addFavCard(user.getUserId(), cardId);
+	}
+
 	//----------------------------------- G E T ----------------------------------------
 
 	@GetMapping
@@ -64,6 +78,12 @@ public class CardController {
 	public List<UserCardsList> findAllUserCardsList(@AuthenticationPrincipal User user) {
 
 		return cardService.findAllUserCardsList(user.getUserId());
+	}
+
+	@GetMapping("/favorites")
+	@PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+	public List<UserFavCards> findAllUserFavCardsList(@AuthenticationPrincipal User user) {
+		return cardService.findAllUserFavCardsList(user.getUserId());
 	}
 
 	@GetMapping("/search")
@@ -93,6 +113,11 @@ public class CardController {
 	public List<UserCardsList> getUserCollection(@PathVariable UUID userId) {
 		return cardService.findUserCollection(userId);
 	}
+
+	@GetMapping("/favorites/user/{userId}")
+	public List<UserFavCards> getUserFavCards(@PathVariable UUID userId) {
+		return cardService.findUserFavCards(userId);
+	}
 	//----------------------------------- P U T ----------------------------------------
 
 	//-------------------------------- D E L E T E -------------------------------------
@@ -104,6 +129,14 @@ public class CardController {
 		User user = (User) authentication.getPrincipal();
 		cardService.deleteCard(user.getUserId(), cardId);
 
+	}
+
+	@DeleteMapping("/favorites/{cardId}")
+	@PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteFavCard(@PathVariable Long cardId, Authentication authentication) {
+		User user = (User) authentication.getPrincipal();
+		cardService.deleteFavCard(user.getUserId(), cardId);
 	}
 }
 

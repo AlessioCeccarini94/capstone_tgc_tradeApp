@@ -1,5 +1,7 @@
 package alessioceccarini.tgcapp.payloads;
 
+import alessioceccarini.tgcapp.enums.Role;
+
 import java.util.UUID;
 
 public record UserResponseDTO(
@@ -10,6 +12,7 @@ public record UserResponseDTO(
 		String email,
 		String city,
 		Double rating,
-		String image
+		String image,
+		Role role
 ) {
 }

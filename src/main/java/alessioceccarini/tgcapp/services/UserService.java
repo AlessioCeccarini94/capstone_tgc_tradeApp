@@ -32,7 +32,6 @@ public class UserService {
 	private final Cloudinary cloudinary;
 	private final CityRepo cityRepo;
 
-	//----------------------------------------- P O S T -------------------------------------------------
 
 	@Autowired
 	public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, Cloudinary cloudinary, CityRepo cityRepo) {

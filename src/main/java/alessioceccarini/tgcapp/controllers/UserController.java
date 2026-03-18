@@ -27,7 +27,6 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	//----------------------------------------- P O S T  ------------------------------------------------
 
 	//------------------------------------------ G E T --------------------------------------------------
 
@@ -52,7 +51,8 @@ public class UserController {
 				user.getEmail(),
 				user.getCity().getCityName(),
 				user.getRating(),
-				user.getImage()
+				user.getImage(),
+				user.getRole()
 		);
 	}
 
@@ -69,10 +69,12 @@ public class UserController {
 				user.getEmail(),
 				user.getCity().getCityName(),
 				user.getRating(),
-				user.getImage()
+				user.getImage(),
+				user.getRole()
 		);
 	}
 	//-------------------------------------- F I L T E R ------------------------------------------------
+
 
 	//------------------------------------------ P U T --------------------------------------------------
 	@PutMapping("/{userId}")
@@ -88,7 +90,8 @@ public class UserController {
 				user.getEmail(),
 				user.getCity().getCityName(),
 				user.getRating(),
-				user.getImage()
+				user.getImage(),
+				user.getRole()
 		);
 
 	}

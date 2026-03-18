@@ -50,6 +50,7 @@ public class SecurityConfig {
 				.requestMatchers("/cards/expansions/**").permitAll()
 				.requestMatchers("/users/**").permitAll()
 				.requestMatchers("/cities").permitAll()
+				.requestMatchers("/carousels/**").permitAll()
 				.anyRequest().authenticated());
 
 		httpSecurity.cors(cors -> {
