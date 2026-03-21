@@ -40,7 +40,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{userId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public UserResponseDTO getUser(@PathVariable UUID userId) {
 		User user = userService.findById(userId);
 		return new UserResponseDTO(
@@ -110,10 +110,10 @@ public class UserController {
 	//--------------------------------------  D E L E T E -----------------------------------------------
 
 	@DeleteMapping("/{userId}")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable UUID id) {
-		userService.deleteUser(id);
+	public void delete(@PathVariable UUID userId) {
+		userService.deleteUser(userId);
 	}
 
 }

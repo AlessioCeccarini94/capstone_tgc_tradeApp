@@ -87,7 +87,7 @@ public class CardController {
 	}
 
 	@GetMapping("/search")
-	public List<Card> findByBlueprintId(@RequestParam String name) {
+	public List<Card> searchCard(@RequestParam String name) {
 		return cardService.searchCards(name);
 	}
 
@@ -100,8 +100,8 @@ public class CardController {
 	}
 
 	@GetMapping("/top")
-	public Page<Card> findTopCards(@RequestParam(defaultValue = "50") int size) {
-		return cardService.orderByPrice();
+	public Page<Card> findTopCards(@RequestParam(defaultValue = "200") int size) {
+		return cardService.orderByPrice(size);
 	}
 
 	@GetMapping("/{blueprintId}/owners")

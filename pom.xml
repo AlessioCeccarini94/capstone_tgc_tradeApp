@@ -111,6 +111,12 @@
             <version>5.12.0</version>
             <scope>compile</scope>
         </dependency>
+        <!-- mailgun dependency -->
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
     </dependencies>
 
     <build>

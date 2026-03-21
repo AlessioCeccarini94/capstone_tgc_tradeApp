@@ -30,4 +30,12 @@ public class ErrorsHandler {
 		return errors;
 	}
 
+	@ExceptionHandler(jakarta.validation.ValidationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Map<String, String> handleValidationException(jakarta.validation.ValidationException ex) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", ex.getMessage());
+		return error;
+	}
+
 }

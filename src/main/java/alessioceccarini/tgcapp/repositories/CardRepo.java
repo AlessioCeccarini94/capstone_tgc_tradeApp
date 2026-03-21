@@ -12,7 +12,12 @@ import java.util.UUID;
 
 public interface CardRepo extends JpaRepository<Card, UUID>, JpaSpecificationExecutor<Card> {
 
-	List<Card> findByCardNameContainingIgnoreCase(String name);
+	@Query("""
+			SELECT c FROM Card c
+			WHERE LOWER(c.cardName) LIKE LOWER(CONCAT('%', :name, '%'))
+			   OR LOWER(c.expansion.name) LIKE LOWER(CONCAT('%', :name, '%'))
+			""")
+	List<Card> searchByNameOrExpansion(String name);
 
 	List<Card> findAll();
 

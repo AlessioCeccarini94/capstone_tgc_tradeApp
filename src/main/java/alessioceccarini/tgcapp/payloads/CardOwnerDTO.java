@@ -5,6 +5,7 @@ import java.util.UUID;
 public record CardOwnerDTO(
 		UUID userId,
 		String username,
-		Double rating
+		Double rating,
+		String email
 ) {
 }

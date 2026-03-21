@@ -44,7 +44,7 @@ public class CardService {
 
 	public List<Card> searchCards(String name) {
 
-		return cardRepo.findByCardNameContainingIgnoreCase(name);
+		return cardRepo.searchByNameOrExpansion(name);
 	}
 
 	public Page<Card> findAllById(Long id, int page, int size) {
@@ -64,8 +64,8 @@ public class CardService {
 		return cardRepo.findByExpansionCardTraderId(expansionId, pageable);
 	}
 
-	public Page<Card> orderByPrice() {
-		return cardRepo.findAllByAvgPrice(PageRequest.of(0, 1000));
+	public Page<Card> orderByPrice(int size) {
+		return cardRepo.findAllByAvgPrice(PageRequest.of(0, size));
 	}
 
 	public List<CardOwnerDTO> findOwnerByCardId(Long blueprintId) {
@@ -75,7 +75,8 @@ public class CardService {
 				.map(card -> new CardOwnerDTO(
 						card.getUser().getUserId(),
 						card.getUser().getUsername(),
-						card.getUser().getRating()
+						card.getUser().getRating(),
+						card.getUser().getEmail()
 				)).toList();
 	}
 

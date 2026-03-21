@@ -2,6 +2,7 @@ package alessioceccarini.tgcapp.entities;
 
 
 import alessioceccarini.tgcapp.enums.Condition;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class UserCardsList {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID uuid;
 	@ManyToOne
+	@JsonIgnore
 	private User user;
 	@ManyToOne
 	private Card card;
