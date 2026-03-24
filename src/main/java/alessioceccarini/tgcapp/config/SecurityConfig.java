@@ -53,8 +53,7 @@ public class SecurityConfig {
 				.requestMatchers("/carousels/**").permitAll()
 				.anyRequest().authenticated());
 
-		httpSecurity.cors(cors -> {
-		});
+		httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
 		httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

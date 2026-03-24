@@ -79,7 +79,14 @@ public class UserService {
 		userRepo.save(admin);
 	}
 
+
 	//------------------------------------------ G E T --------------------------------------------------
+
+
+	public Page<User> findAllUsers(int page, int size, String orderBy) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+		return userRepo.findAll(pageable);
+	}
 
 	public User findById(UUID id) {
 		return userRepo.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
@@ -151,10 +158,5 @@ public class UserService {
 	public void deleteUser(UUID id) {
 		User user = this.findById(id);
 		userRepo.delete(user);
-	}
-
-	public Page<User> findAllUsers(int page, int size, String orderBy) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
-		return userRepo.findAll(pageable);
 	}
 }

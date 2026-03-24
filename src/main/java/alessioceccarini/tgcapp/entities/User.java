@@ -46,6 +46,8 @@ public class User implements UserDetails {
 	private City city;
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<UserCardsList> userCardsList;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<UserFavCards> userFavCardsList;
 
 
 	public User(String firstName, String lastName, String username, String email, String password) {
