@@ -7,6 +7,8 @@ import alessioceccarini.tgcapp.exceptions.NotFoundException;
 import alessioceccarini.tgcapp.payloads.UserDTO;
 import alessioceccarini.tgcapp.payloads.UserUpdateDTO;
 import alessioceccarini.tgcapp.repositories.CityRepo;
+import alessioceccarini.tgcapp.repositories.UserCardListRepo;
+import alessioceccarini.tgcapp.repositories.UserFavCardsRepo;
 import alessioceccarini.tgcapp.repositories.UserRepo;
 import alessioceccarini.tgcapp.specifications.UserSpecification;
 import com.cloudinary.Cloudinary;
@@ -31,14 +33,18 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final Cloudinary cloudinary;
 	private final CityRepo cityRepo;
+	private final UserFavCardsRepo userFavCardsRepo;
+	private final UserCardListRepo userCardListRepo;
 
 
 	@Autowired
-	public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, Cloudinary cloudinary, CityRepo cityRepo) {
+	public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, Cloudinary cloudinary, CityRepo cityRepo, UserFavCardsRepo userFavCardsRepo, UserCardListRepo userCardListRepo) {
 		this.userRepo = userRepo;
 		this.passwordEncoder = passwordEncoder;
 		this.cloudinary = cloudinary;
 		this.cityRepo = cityRepo;
+		this.userFavCardsRepo = userFavCardsRepo;
+		this.userCardListRepo = userCardListRepo;
 	}
 
 	//----------------------------------- POST ADMIN FOR RUNNER -----------------------------------------
@@ -157,6 +163,8 @@ public class UserService {
 
 	public void deleteUser(UUID id) {
 		User user = this.findById(id);
+		userFavCardsRepo.deleteAll(userFavCardsRepo.findByUser_UserId(id));
+		userCardListRepo.deleteAll(userCardListRepo.findByUser_UserId(id));
 		userRepo.delete(user);
 	}
 }
