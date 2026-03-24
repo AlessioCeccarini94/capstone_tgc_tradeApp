@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 @Component
-public class PopoulationRunner implements CommandLineRunner {
+public class PopulationRunner implements CommandLineRunner {
 
 	private final UserService userService;
 	private final CityRepo cityRepo;
@@ -41,7 +41,7 @@ public class PopoulationRunner implements CommandLineRunner {
 	private String adminPassword;
 
 	@Autowired
-	public PopoulationRunner(UserService userService, PasswordEncoder passwordEncoder, CityRepo cityRepo, ProvinceRepo provinceRepo, CardImporterService cardImporterService, CardRepo cardRepo) {
+	public PopulationRunner(UserService userService, PasswordEncoder passwordEncoder, CityRepo cityRepo, ProvinceRepo provinceRepo, CardImporterService cardImporterService, CardRepo cardRepo) {
 		this.userService = userService;
 		this.cityRepo = cityRepo;
 		this.provinceRepo = provinceRepo;
@@ -79,25 +79,25 @@ public class PopoulationRunner implements CommandLineRunner {
 						.withSkipLines(1)
 						.withCSVParser(new CSVParserBuilder().withSeparator(';').build()).build();
 				String[] line;
+
 				while ((line = reader.readNext()) != null) {
-					while ((line = reader.readNext()) != null) {
-						if (line[3].equals("Verbano-Cusio-Ossola")) line[3] = ("Verbania");
-						if (line[3].equals("Valle d'Aosta/Vallée d'Aoste")) line[3] = ("Aosta");
-						if (line[3].equals("Monza e della Brianza")) line[3] = ("Monza-Brianza");
-						if (line[3].equals("Bolzano/Bozen")) line[3] = ("Bolzano");
-						if (line[3].equals("La Spezia")) line[3] = ("La-Spezia");
-						if (line[3].equals("Reggio nell'Emilia")) line[3] = ("Reggio-Emilia");
-						if (line[3].equals("Forlì-Cesena")) line[3] = ("Forli-Cesena");
-						if (line[3].equals("Pesaro e Urbino")) line[3] = ("Pesaro-Urbino");
-						if (line[3].equals("Ascoli Piceno")) line[3] = ("Ascoli-Piceno");
-						if (line[3].equals("Reggio Calabria")) line[3] = ("Reggio-Calabria");
-						if (line[3].equals("Vibo Valentia")) line[3] = ("Vibo-Valentia");
-						if (line[3].equals("Sud Sardegna")) line[3] = ("Carbonia Iglesias");
-						Province province = provinceRepo.findByProvince(line[3]).orElseThrow(() -> new IllegalArgumentException("Province not found"));
-						City city = new City(line[2], province);
-						cityRepo.save(city);
-					}
+					if (line[3].equals("Verbano-Cusio-Ossola")) line[3] = ("Verbania");
+					if (line[3].equals("Valle d'Aosta/Vallée d'Aoste")) line[3] = ("Aosta");
+					if (line[3].equals("Monza e della Brianza")) line[3] = ("Monza-Brianza");
+					if (line[3].equals("Bolzano/Bozen")) line[3] = ("Bolzano");
+					if (line[3].equals("La Spezia")) line[3] = ("La-Spezia");
+					if (line[3].equals("Reggio nell'Emilia")) line[3] = ("Reggio-Emilia");
+					if (line[3].equals("Forlì-Cesena")) line[3] = ("Forli-Cesena");
+					if (line[3].equals("Pesaro e Urbino")) line[3] = ("Pesaro-Urbino");
+					if (line[3].equals("Ascoli Piceno")) line[3] = ("Ascoli-Piceno");
+					if (line[3].equals("Reggio Calabria")) line[3] = ("Reggio-Calabria");
+					if (line[3].equals("Vibo Valentia")) line[3] = ("Vibo-Valentia");
+					if (line[3].equals("Sud Sardegna")) line[3] = ("Carbonia Iglesias");
+					Province province = provinceRepo.findByProvince(line[3]).orElseThrow(() -> new IllegalArgumentException("Province not found"));
+					City city = new City(line[2], province);
+					cityRepo.save(city);
 				}
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println(e.getMessage());
