@@ -4,6 +4,7 @@ import alessioceccarini.tgcapp.security.JWTFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -42,16 +43,16 @@ public class SecurityConfig {
 
 		// Permettere autenticazione a tutte le ricjieste HTTP
 		httpSecurity.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-				.requestMatchers("/auth/**").permitAll()
-				.requestMatchers("/games/**").permitAll()
-				.requestMatchers("/cards/top").permitAll()
-				.requestMatchers("/cards").permitAll()
-				.requestMatchers("/cards/search").permitAll()
-				.requestMatchers("/cards/expansions/**").permitAll()
-				.requestMatchers("/users/**").permitAll()
-				.requestMatchers("/cities").permitAll()
-				.requestMatchers("/carousels/**").permitAll()
+				.requestMatchers("/error").permitAll()
+				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+				.requestMatchers(org.springframework.http.HttpMethod.GET, "/cards/search/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/cards/**").permitAll()
+				.requestMatchers("/error").permitAll()
+
+				.requestMatchers("/auth/**", "/games/**", "/cities/**", "/carousels/**", "/cards/**").permitAll()
+
 				.anyRequest().authenticated());
+
 
 		httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 

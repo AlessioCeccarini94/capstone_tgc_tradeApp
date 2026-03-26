@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +18,8 @@ public interface CardRepo extends JpaRepository<Card, UUID>, JpaSpecificationExe
 			WHERE LOWER(c.cardName) LIKE LOWER(CONCAT('%', :name, '%'))
 			   OR LOWER(c.expansion.name) LIKE LOWER(CONCAT('%', :name, '%'))
 			""")
-	List<Card> findAll();
+	List<Card> findByNameCustom(@Param("name") String name);
+
 
 	@Query("SELECT c.blueprintId FROM Card c")
 	List<Long> findAllBlueprintIds();
