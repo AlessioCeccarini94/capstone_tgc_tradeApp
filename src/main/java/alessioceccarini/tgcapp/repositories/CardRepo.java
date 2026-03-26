@@ -17,8 +17,6 @@ public interface CardRepo extends JpaRepository<Card, UUID>, JpaSpecificationExe
 			WHERE LOWER(c.cardName) LIKE LOWER(CONCAT('%', :name, '%'))
 			   OR LOWER(c.expansion.name) LIKE LOWER(CONCAT('%', :name, '%'))
 			""")
-	List<Card> searchByNameOrExpansion(String name);
-
 	List<Card> findAll();
 
 	@Query("SELECT c.blueprintId FROM Card c")
@@ -32,4 +30,12 @@ public interface CardRepo extends JpaRepository<Card, UUID>, JpaSpecificationExe
 
 	@Query("SELECT c FROM Card c WHERE c.avgPrice IS NOT NULL ORDER BY c.avgPrice DESC")
 	Page<Card> findAllByAvgPrice(Pageable pageable);
+
+	Page<Card> findByCardNameContainingIgnoreCase(String name, Pageable pageable);
+
+	Page<Card> findByExpansion_Game_IdAndCardNameContainingIgnoreCase(
+			Long gameId,
+			String name,
+			Pageable pageable
+	);
 }

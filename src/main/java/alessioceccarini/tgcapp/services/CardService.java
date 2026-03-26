@@ -42,9 +42,21 @@ public class CardService {
 		return cardRepo.findAll();
 	}
 
-	public List<Card> searchCards(String name) {
+	public Page<Card> searchCards(String name, Long gameId, Pageable pageable) {
 
-		return cardRepo.searchByNameOrExpansion(name);
+		if (gameId != null && name != null && !name.isBlank()) {
+			return cardRepo.findByExpansion_Game_IdAndCardNameContainingIgnoreCase(gameId, name, pageable);
+		}
+
+		if (gameId != null) {
+			return cardRepo.findByExpansion_Game_Id(gameId, pageable);
+		}
+
+		if (name != null && !name.isBlank()) {
+			return cardRepo.findByCardNameContainingIgnoreCase(name, pageable);
+		}
+
+		return cardRepo.findAll(pageable);
 	}
 
 	public Page<Card> findAllById(Long id, int page, int size) {

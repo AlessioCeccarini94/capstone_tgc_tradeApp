@@ -11,6 +11,8 @@ import alessioceccarini.tgcapp.services.CardService;
 import alessioceccarini.tgcapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -87,8 +89,13 @@ public class CardController {
 	}
 
 	@GetMapping("/search")
-	public List<Card> searchCard(@RequestParam String name) {
-		return cardService.searchCards(name);
+	public Page<Card> searchCard(
+			@RequestParam(required = false) String query,
+			@RequestParam(required = false) Long gameId,
+			@RequestParam(defaultValue = "100") int size
+	) {
+		Pageable pageable = PageRequest.of(0, size);
+		return cardService.searchCards(query, gameId, pageable);
 	}
 
 	@GetMapping("/expansions/{expansionId}")
