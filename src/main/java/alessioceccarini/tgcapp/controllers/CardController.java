@@ -95,7 +95,7 @@ public class CardController {
 	public Page<Card> searchCard(
 			@RequestParam(required = false) String query,
 			@RequestParam(required = false) Long gameId,
-			@RequestParam(defaultValue = "100") int size
+			@RequestParam(defaultValue = "1000") int size
 	) {
 		Pageable pageable = PageRequest.of(0, size);
 		return cardService.searchCards(query, gameId, pageable);
@@ -111,7 +111,7 @@ public class CardController {
 	public Card findById(@PathVariable Long cardId) {
 		return cardService.findById(cardId);
 	}
-	
+
 	@GetMapping("/collection")
 	@PreAuthorize("hasAnyAuthority('ADMIN','USER')")
 	public List<UserCardsList> findAllUserCardsList(@AuthenticationPrincipal User user) {
