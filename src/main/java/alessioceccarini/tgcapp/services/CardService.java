@@ -10,10 +10,12 @@ import alessioceccarini.tgcapp.payloads.CardOwnerDTO;
 import alessioceccarini.tgcapp.repositories.CardRepo;
 import alessioceccarini.tgcapp.repositories.UserCardListRepo;
 import alessioceccarini.tgcapp.repositories.UserFavCardsRepo;
+import alessioceccarini.tgcapp.specifications.CardSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,20 +45,41 @@ public class CardService {
 	}
 
 	public Page<Card> searchCards(String name, Long gameId, Pageable pageable) {
-
 		if (gameId != null && name != null && !name.isBlank()) {
 			return cardRepo.findByExpansion_Game_IdAndCardNameContainingIgnoreCase(gameId, name, pageable);
 		}
-
 		if (gameId != null) {
 			return cardRepo.findByExpansion_Game_Id(gameId, pageable);
 		}
-
 		if (name != null && !name.isBlank()) {
 			return cardRepo.findByCardNameContainingIgnoreCase(name, pageable);
 		}
-
 		return cardRepo.findAll(pageable);
+	}
+
+	public Page<Card> filterCards(
+			Long gameId,
+			Long expansionId,
+			Double minPrice,
+			Double maxPrice,
+			Pageable pageable
+	) {
+		Specification<Card> spec = Specification.where((root, query, criteriaBuilder) ->
+				criteriaBuilder.conjunction());
+		if (gameId != null) {
+			spec = spec.and(CardSpecification.hasGame(gameId));
+		}
+		if (expansionId != null) {
+			spec = spec.and(CardSpecification.hasExpansion(expansionId));
+		}
+		if (minPrice != null) {
+			spec = spec.and(CardSpecification.priceGreaterThan(minPrice));
+		}
+		if (maxPrice != null) {
+			spec = spec.and(CardSpecification.priceLessThan(maxPrice));
+		}
+
+		return cardRepo.findAll(spec, pageable);
 	}
 
 	public Page<Card> findAllById(Long id, int page, int size) {

@@ -8,7 +8,6 @@ import alessioceccarini.tgcapp.entities.UserFavCards;
 import alessioceccarini.tgcapp.exceptions.NotFoundException;
 import alessioceccarini.tgcapp.payloads.CardOwnerDTO;
 import alessioceccarini.tgcapp.services.CardService;
-import alessioceccarini.tgcapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,12 +26,10 @@ import java.util.UUID;
 public class CardController {
 
 	private final CardService cardService;
-	private final UserService userService;
 
 	@Autowired
-	public CardController(CardService cardService, UserService userService) {
+	public CardController(CardService cardService) {
 		this.cardService = cardService;
-		this.userService = userService;
 	}
 
 	//---------------------------------- P O S T ---------------------------------------
@@ -70,11 +67,51 @@ public class CardController {
 		return cardService.findAll();
 	}
 
+	@GetMapping({"/filteredCard", "/filter"})
+	public Page<Card> filterCards(
+			@RequestParam(required = false) Long gameId,
+			@RequestParam(required = false) Long game,
+			@RequestParam(required = false) Long expansionId,
+			@RequestParam(required = false) Long expansion,
+			@RequestParam(required = false) Double minPrice,
+			@RequestParam(required = false) Double maxPrice,
+			@RequestParam(defaultValue = "100") int size
+	) {
+		try {
+			Pageable pageable = PageRequest.of(0, size);
+
+			Long effectiveGameId = gameId != null ? gameId : game;
+			Long effectiveExpansionId = expansionId != null ? expansionId : expansion;
+
+			return cardService.filterCards(effectiveGameId, effectiveExpansionId, minPrice, maxPrice, pageable);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+
+	@GetMapping("/search")
+	public Page<Card> searchCard(
+			@RequestParam(required = false) String query,
+			@RequestParam(required = false) Long gameId,
+			@RequestParam(defaultValue = "100") int size
+	) {
+		Pageable pageable = PageRequest.of(0, size);
+		return cardService.searchCards(query, gameId, pageable);
+	}
+
+	@GetMapping("/top")
+	public Page<Card> findTopCards(@RequestParam(defaultValue = "200") int size) {
+		return cardService.orderByPrice(size);
+	}
+
+
 	@GetMapping("/{cardId}")
 	public Card findById(@PathVariable Long cardId) {
 		return cardService.findById(cardId);
 	}
-
+	
 	@GetMapping("/collection")
 	@PreAuthorize("hasAnyAuthority('ADMIN','USER')")
 	public List<UserCardsList> findAllUserCardsList(@AuthenticationPrincipal User user) {
@@ -88,27 +125,12 @@ public class CardController {
 		return cardService.findAllUserFavCardsList(user.getUserId());
 	}
 
-	@GetMapping("/search")
-	public Page<Card> searchCard(
-			@RequestParam(required = false) String query,
-			@RequestParam(required = false) Long gameId,
-			@RequestParam(defaultValue = "100") int size
-	) {
-		Pageable pageable = PageRequest.of(0, size);
-		return cardService.searchCards(query, gameId, pageable);
-	}
-
 	@GetMapping("/expansions/{expansionId}")
 	public Page<Card> findByExpansionId(
 			@PathVariable Long expansionId,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "200") int size) {
 		return cardService.findByExpansionId(expansionId, page, size);
-	}
-
-	@GetMapping("/top")
-	public Page<Card> findTopCards(@RequestParam(defaultValue = "200") int size) {
-		return cardService.orderByPrice(size);
 	}
 
 	@GetMapping("/{blueprintId}/owners")

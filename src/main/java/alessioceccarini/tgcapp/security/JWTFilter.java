@@ -36,37 +36,35 @@ public class JWTFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String authHeader = request.getHeader("Authorization");
-		System.out.println("authHeader: " + authHeader);
 
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 			String token = authHeader.substring(7).trim();
 
-			UUID userId = jwtTools.extractIdFromToken(token);
+			try {
+				UUID userId = jwtTools.extractIdFromToken(token);
+				User user = userService.findById(userId);
 
-			User user = userService.findById(userId);
+				UsernamePasswordAuthenticationToken auth =
+						new UsernamePasswordAuthenticationToken(
+								user,
+								null,
+								user.getAuthorities()
+						);
 
-			UsernamePasswordAuthenticationToken auth =
-					new UsernamePasswordAuthenticationToken(
-							user,
-							null,
-							user.getAuthorities()
-					);
-
-			SecurityContextHolder.getContext().setAuthentication(auth);
+				SecurityContextHolder.getContext().setAuthentication(auth);
+			} catch (Exception ex) {
+				SecurityContextHolder.clearContext();
+			}
 		}
 		filterChain.doFilter(request, response);
 	}
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		if ("OPTIONS".equals(request.getMethod())) {
-			return true;
-		}
+		String path = request.getServletPath();
 		AntPathMatcher matcher = new AntPathMatcher();
-		return matcher.match("/auth/**", request.getServletPath()) ||
-				matcher.match("/cities/**", request.getServletPath()) ||
-				matcher.match("/carousels/**", request.getServletPath()) ||
-				matcher.match("/cards/expansions", request.getServletPath());
-
+		return matcher.match("/auth/**", path);
 	}
+
+
 }
