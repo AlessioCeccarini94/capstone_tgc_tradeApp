@@ -111,13 +111,7 @@ public class CardController {
 	public Card findById(@PathVariable Long cardId) {
 		return cardService.findById(cardId);
 	}
-
-	// Alias endpoint for "get specific card" (by blueprint/card id)
-	@GetMapping("/specific/{cardId}")
-	public Card findSpecificCard(@PathVariable Long cardId) {
-		return cardService.findById(cardId);
-	}
-
+	
 	@GetMapping("/collection")
 	@PreAuthorize("hasAnyAuthority('ADMIN','USER')")
 	public List<UserCardsList> findAllUserCardsList(@AuthenticationPrincipal User user) {

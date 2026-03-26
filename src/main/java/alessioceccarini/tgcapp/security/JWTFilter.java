@@ -53,9 +53,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			} catch (Exception ex) {
-				// If the token is missing/invalid/expired we don't want to block
-				// public endpoints (like `GET /cards/**`). Auth will be absent and
-				// protected endpoints will handle it.
 				SecurityContextHolder.clearContext();
 			}
 		}
@@ -66,9 +63,6 @@ public class JWTFilter extends OncePerRequestFilter {
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		String path = request.getServletPath();
 		AntPathMatcher matcher = new AntPathMatcher();
-		// Don't require JWT for public auth endpoints.
-		// For everything else (including `/cards/**`) we allow the JWT filter to
-		// populate the SecurityContext when a Bearer token is provided.
 		return matcher.match("/auth/**", path);
 	}
 
