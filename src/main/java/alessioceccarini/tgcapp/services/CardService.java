@@ -6,6 +6,7 @@ import alessioceccarini.tgcapp.entities.UserCardsList;
 import alessioceccarini.tgcapp.entities.UserFavCards;
 import alessioceccarini.tgcapp.enums.Condition;
 import alessioceccarini.tgcapp.exceptions.NotFoundException;
+import alessioceccarini.tgcapp.exceptions.UnauthorizedException;
 import alessioceccarini.tgcapp.payloads.CardOwnerDTO;
 import alessioceccarini.tgcapp.repositories.CardRepo;
 import alessioceccarini.tgcapp.repositories.UserCardListRepo;
@@ -177,6 +178,20 @@ public class CardService {
 	public List<UserFavCards> findAllUserFavCardsList(UUID userId) {
 		return userFavCardsRepo.findByUser_UserId(userId);
 	}
+
+	//-------------------------------------------------- P U T ---------------------------------------------------------
+
+	public UserCardsList updateCard(UUID userId, UUID cardId, Condition condition) {
+		UserCardsList cardsList = userCardListRepo.findByUuid(cardId)
+				.orElseThrow(() -> new NotFoundException("Card not found"));
+		if (!cardsList.getUser().getUserId().equals(userId)) {
+			throw new UnauthorizedException("Not your card");
+		}
+		cardsList.setCondition(condition);
+		return userCardListRepo.save(cardsList);
+	}
+
+
 	//------------------------------------------------ D E L E T E -----------------------------------------------------
 
 	public void deleteCard(UUID userId, Long cardId) {
