@@ -105,6 +105,7 @@ public class CardController {
 	}
 
 	@GetMapping("/top")
+	public Page<Card> findTopCards(@RequestParam(defaultValue = "200") int size) {
 		return cardService.orderByPrice(size);
 	}
 
