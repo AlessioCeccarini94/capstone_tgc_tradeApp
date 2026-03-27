@@ -97,14 +97,14 @@ public class CardController {
 	public Page<Card> searchCard(
 			@RequestParam(required = false) String query,
 			@RequestParam(required = false) Long gameId,
-			@RequestParam(defaultValue = "1000") int size
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size
 	) {
-		Pageable pageable = PageRequest.of(0, size);
+		Pageable pageable = PageRequest.of(page, size);
 		return cardService.searchCards(query, gameId, pageable);
 	}
 
 	@GetMapping("/top")
-	public Page<Card> findTopCards(@RequestParam(defaultValue = "200") int size) {
 		return cardService.orderByPrice(size);
 	}
 
