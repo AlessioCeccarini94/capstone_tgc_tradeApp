@@ -7,6 +7,7 @@ import alessioceccarini.tgcapp.entities.UserCardsList;
 import alessioceccarini.tgcapp.entities.UserFavCards;
 import alessioceccarini.tgcapp.exceptions.NotFoundException;
 import alessioceccarini.tgcapp.payloads.CardOwnerDTO;
+import alessioceccarini.tgcapp.payloads.UpdateConditionDTO;
 import alessioceccarini.tgcapp.services.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -111,7 +113,7 @@ public class CardController {
 	public Card findById(@PathVariable Long cardId) {
 		return cardService.findById(cardId);
 	}
-	
+
 	@GetMapping("/collection")
 	@PreAuthorize("hasAnyAuthority('ADMIN','USER')")
 	public List<UserCardsList> findAllUserCardsList(@AuthenticationPrincipal User user) {
@@ -149,6 +151,16 @@ public class CardController {
 	}
 	//----------------------------------- P U T ----------------------------------------
 
+	@PutMapping("/collection/card/{cardId}")
+	@PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+	public UserCardsList changeCondition(
+			@PathVariable UUID cardId,
+			@RequestBody @Validated UpdateConditionDTO conditionDTO,
+			Authentication authentication
+	) {
+		User user = (User) authentication.getPrincipal();
+		return cardService.updateCard(user.getUserId(), cardId, conditionDTO.condition());
+	}
 	//-------------------------------- D E L E T E -------------------------------------
 
 	@DeleteMapping("/collection/{cardId}")
