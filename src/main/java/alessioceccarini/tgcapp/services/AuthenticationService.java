@@ -3,7 +3,7 @@ package alessioceccarini.tgcapp.services;
 import alessioceccarini.tgcapp.entities.User;
 import alessioceccarini.tgcapp.exceptions.UnauthorizedException;
 import alessioceccarini.tgcapp.payloads.LoginDTO;
-import alessioceccarini.tgcapp.security.JWTTools;
+import alessioceccarini.tgcapp.tools.JWTTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class AuthenticationService {
 		// CHECK CREDENTIALS
 		User user = this.userService.findByEmail(loginDTO.email());
 		if (passwordEncoder.matches(loginDTO.password(), user.getPassword())) {
-			String accessToken = jwtTools.genearateToken(user);
+			String accessToken = jwtTools.generateToken(user);
 			return accessToken;
 		} else {
 			throw new UnauthorizedException("Invalid credentials");

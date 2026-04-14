@@ -1,4 +1,4 @@
-package alessioceccarini.tgcapp.security;
+package alessioceccarini.tgcapp.tools;
 
 import alessioceccarini.tgcapp.entities.User;
 import alessioceccarini.tgcapp.exceptions.UnauthorizedException;
@@ -16,11 +16,12 @@ public class JWTTools {
 	@Value("${jwt.secret}")
 	private String jwtSecret;
 
-	public String genearateToken(User user) {
-
-		return Jwts.builder().issuedAt(new Date(System.currentTimeMillis()))
+	public String generateToken(User user) {
+		return Jwts.builder()
+				.issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30))
-				.subject(String.valueOf(user.getUserId()))
+				.subject(user.getUsername())
+				.claim("userId", user.getUserId())
 				.signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
 				.compact();
 	}
@@ -38,7 +39,16 @@ public class JWTTools {
 				.build()
 				.parseSignedClaims(token)
 				.getPayload()
-				.getSubject());
+				.get("userId", String.class));
+	}
+
+	public String extractUsername(String token) {
+		return Jwts.parser()
+				.verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+				.build()
+				.parseSignedClaims(token)
+				.getPayload()
+				.getSubject();
 	}
 
 }

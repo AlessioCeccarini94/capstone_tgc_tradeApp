@@ -2,6 +2,7 @@ package alessioceccarini.tgcapp.security;
 
 import alessioceccarini.tgcapp.entities.User;
 import alessioceccarini.tgcapp.services.UserService;
+import alessioceccarini.tgcapp.tools.JWTTools;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
