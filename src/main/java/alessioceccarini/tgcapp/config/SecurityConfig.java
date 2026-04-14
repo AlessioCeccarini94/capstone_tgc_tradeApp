@@ -48,7 +48,9 @@ public class SecurityConfig {
 				.requestMatchers(org.springframework.http.HttpMethod.GET, "/cards/search/**").permitAll()
 				.requestMatchers(HttpMethod.GET, "/cards/**").permitAll()
 				.requestMatchers("/error").permitAll()
-
+				.requestMatchers("/ws/**").permitAll()
+				.requestMatchers("/topic/**").permitAll()
+				.requestMatchers("/app/**").permitAll()
 				.requestMatchers("/auth/**", "/games/**", "/cities/**", "/carousels/**", "/cards/**").permitAll()
 
 				.anyRequest().authenticated());
