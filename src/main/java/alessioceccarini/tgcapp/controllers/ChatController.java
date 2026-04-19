@@ -38,8 +38,14 @@ public class ChatController {
 		System.out.println("SENDER: " + message.sender());
 		System.out.println("RECEIVER: " + message.receiver());
 
-		simpMessagingTemplate.convertAndSend(
-				"/topic/private/" + message.receiver(),
+		simpMessagingTemplate.convertAndSendToUser(
+				message.receiver(),
+				"/queue/messages",
+				message
+		);
+		simpMessagingTemplate.convertAndSendToUser(
+				message.sender(),
+				"/queue/messages",
 				message
 		);
 
