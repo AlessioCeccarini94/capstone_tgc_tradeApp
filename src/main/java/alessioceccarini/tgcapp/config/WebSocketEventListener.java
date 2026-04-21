@@ -1,6 +1,5 @@
 package alessioceccarini.tgcapp.config;
 
-import alessioceccarini.tgcapp.enums.MessageType;
 import alessioceccarini.tgcapp.payloads.MessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -24,7 +23,7 @@ public class WebSocketEventListener {
 		String username = (String) headerAccessor.getSessionAttributes().get("username");
 
 		if (username != null) {
-			MessageDTO messageDTO = new MessageDTO(MessageType.LEAVE, username, null, null);
+			MessageDTO messageDTO = new MessageDTO(null, null, null, null, null);
 			simpMessagingTemplate.convertAndSend("/topic/public", messageDTO);
 		}
 	}

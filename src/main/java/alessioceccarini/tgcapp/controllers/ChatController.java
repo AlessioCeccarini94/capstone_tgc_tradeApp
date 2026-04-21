@@ -43,6 +43,11 @@ public class ChatController {
 				"/queue/messages",
 				message
 		);
+		simpMessagingTemplate.convertAndSendToUser(
+				message.sender(),
+				"/queue/messages",
+				message
+		);
 
 		System.out.println("MESSAGE SENT TO USER CHANNEL");
 	}
