@@ -11,7 +11,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
-import java.time.LocalDate;
 
 @Controller
 public class ChatController {
@@ -42,6 +41,10 @@ public class ChatController {
 
 	@MessageMapping("/chat.private")
 	public void privateMessage(@Payload MessageDTO message, Principal principal) {
+		System.out.println("PRIVATE MESSAGE principal: " + (principal != null ? principal.getName() : "null"));
+		System.out.println("PRIVATE MESSAGE sender dto: " + message.sender());
+		System.out.println("PRIVATE MESSAGE receiver dto: " + message.receiver());
+
 		if (principal == null) {
 			throw new IllegalStateException("Unauthorized websocket session");
 		}
@@ -53,7 +56,7 @@ public class ChatController {
 				authenticatedSender,
 				message.receiver(),
 				message.type(),
-				message.date() != null ? message.date() : LocalDate.now()
+				message.date()
 		);
 
 		messageService.saveMessage(safeMessage);
@@ -70,4 +73,6 @@ public class ChatController {
 				safeMessage
 		);
 	}
+
+
 }
