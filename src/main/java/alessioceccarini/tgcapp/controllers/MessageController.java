@@ -1,12 +1,10 @@
 package alessioceccarini.tgcapp.controllers;
 
+import alessioceccarini.tgcapp.payloads.ConversationDTO;
 import alessioceccarini.tgcapp.payloads.MessageDTO;
 import alessioceccarini.tgcapp.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,4 +24,14 @@ public class MessageController {
 		return messageService.getConversation(sender, receiver);
 	}
 
+	@GetMapping("/conversations/{username}")
+	public List<ConversationDTO> getUserConversations(@PathVariable String username) {
+		return messageService.getUserConversations(username);
+	}
+
+	@DeleteMapping("/{username}/{otherUsername}")
+	public void deleteConversation(@PathVariable String username,
+								   @PathVariable String otherUsername) {
+		messageService.deleteConversation(username, otherUsername);
+	}
 }
